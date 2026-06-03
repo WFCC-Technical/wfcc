@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFCC — Architects · Engineers · Builders</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1628;
+  --navy2:#0F1E38;
+  --navy3:#162544;
+  --blue:#1A3A6E;
+  --blue-mid:#1E4A8C;
+  --accent:#F5C518;
+  --accent2:#FFD740;
+  --accent-dim:rgba(245,197,24,0.12);
+  --accent-border:rgba(245,197,24,0.22);
+  --off-white:#EFF3FA;
+  --muted:#7A8EAD;
+  --font-display:'Cormorant Garamond',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--navy);color:var(--navy);overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:var(--accent)}
+
+/* ===================== NAV ===================== */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s}
+nav.scrolled{background:rgba(11,22,40,0.97);border-bottom:1px solid var(--accent-border);backdrop-filter:blur(12px)}
+.nav-logo{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--accent);letter-spacing:0.08em;text-decoration:none}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.45);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{background:var(--accent);color:var(--navy);font-family:var(--font-body);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:9px 22px;border-radius:2px;cursor:pointer;border:none;transition:background 0.2s}
+.nav-cta:hover{background:var(--accent2)}
+
+/* ===================== CINEMATIC ENGINE ===================== */
+.cine-block{position:relative;height:200vh}
+.cine-sticky{position:sticky;top:0;height:100vh;overflow:hidden}
+.cine-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;will-change:opacity}
+.cine-bg.active{opacity:1}
+.vig-left{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to right,rgba(11,22,40,0.97) 0%,rgba(11,22,40,0.72) 36%,rgba(11,22,40,0.18) 62%,transparent 100%)}
+.vig-right{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to left,rgba(11,22,40,0.97) 0%,rgba(11,22,40,0.72) 36%,rgba(11,22,40,0.18) 62%,transparent 100%)}
+.vig-bottom{position:absolute;bottom:0;left:0;right:0;height:38%;z-index:2;pointer-events:none;background:linear-gradient(to top,var(--navy) 0%,transparent 100%)}
+
+.cine-text{position:absolute;z-index:10;bottom:0;top:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 5% 72px}
+.cine-text.left{left:0;right:50%;text-align:left}
+.cine-text.right{right:0;left:50%;text-align:right;align-items:flex-end}
+
+.cine-eyebrow{color:var(--accent);font-size:10px;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(16px);transition:opacity 0.55s,transform 0.55s}
+.cine-text.right .cine-eyebrow{flex-direction:row-reverse}
+.cine-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent);flex-shrink:0}
+.cine-text.right .cine-eyebrow::before{order:2}
+
+.cine-h{font-family:var(--font-display);font-size:clamp(36px,5.5vw,70px);font-weight:500;color:#fff;line-height:1.05;margin-bottom:14px;opacity:0;transform:translateY(20px);transition:opacity 0.6s 0.08s,transform 0.6s 0.08s}
+.cine-h em{color:var(--accent);font-style:italic}
+.cine-sub{color:rgba(255,255,255,0.42);font-size:14px;line-height:1.72;max-width:340px;opacity:0;transform:translateY(14px);transition:opacity 0.6s 0.16s,transform 0.6s 0.16s}
+.cine-btns{display:flex;gap:14px;align-items:center;margin-top:26px;opacity:0;transform:translateY(12px);transition:opacity 0.6s 0.24s,transform 0.6s 0.24s}
+.cine-text.shown .cine-eyebrow,.cine-text.shown .cine-h,.cine-text.shown .cine-sub,.cine-text.shown .cine-btns{opacity:1;transform:translateY(0)}
+
+.slide-badge{position:absolute;top:84px;z-index:10;background:rgba(11,22,40,0.75);border:1px solid var(--accent-border);padding:8px 16px;border-radius:2px;backdrop-filter:blur(4px);opacity:0;transition:opacity 0.5s 0.35s}
+.slide-badge.left-b{left:5%}
+.slide-badge.right-b{right:5%}
+.slide-badge.shown{opacity:1}
+.badge-type{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.badge-name{font-size:12px;color:rgba(255,255,255,0.75)}
+
+.dot-nav{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:10px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all 0.3s}
+.dot.active{background:var(--accent);transform:scale(1.4)}
+
+.scroll-hint{position:absolute;bottom:26px;right:5%;z-index:10;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0.45}
+.sh-text{color:rgba(255,255,255,0.4);font-size:8px;letter-spacing:0.18em;text-transform:uppercase;writing-mode:vertical-rl}
+.sh-line{width:1px;height:34px;background:linear-gradient(to bottom,var(--accent),transparent);animation:shp 2s infinite}
+@keyframes shp{0%,100%{opacity:1}50%{opacity:0.15}}
+
+/* ===================== BUTTONS ===================== */
+.btn-accent{background:var(--accent);color:var(--navy);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:12px 26px;border-radius:2px;text-decoration:none;transition:background 0.2s;display:inline-block}
+.btn-accent:hover{background:var(--accent2)}
+.btn-ghost-w{color:rgba(255,255,255,0.55);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.btn-ghost-w:hover{color:var(--accent)}
+.btn-navy{background:var(--navy);color:var(--accent);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:13px 28px;border-radius:2px;text-decoration:none;display:inline-block;transition:background 0.2s}
+.btn-navy:hover{background:var(--navy2)}
+
+/* ===================== SECTION SHARED ===================== */
+.content-section{padding:96px 5%}
+.s-label{color:var(--accent);font-size:10px;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:'';width:22px;height:1px;background:var(--accent)}
+.s-h2{font-family:var(--font-display);font-size:clamp(30px,4vw,52px);font-weight:500;line-height:1.08;margin-bottom:14px}
+.s-sub{font-size:15px;line-height:1.75;max-width:520px}
+
+/* ===================== SERVICES ===================== */
+.services-section{background:var(--off-white)}
+.services-section .s-label{color:var(--blue-mid)}
+.services-section .s-label::before{background:var(--blue-mid)}
+.services-section .s-h2{color:var(--navy)}
+.services-section .s-sub{color:#5A6A82}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(0,0,0,0.07);margin-top:52px;border:1px solid rgba(0,0,0,0.07)}
+.svc-card{background:var(--off-white);padding:44px 40px;transition:background 0.25s;cursor:default}
+.svc-card:hover{background:#DDE5F5}
+.svc-num{font-family:var(--font-display);font-size:48px;color:rgba(30,74,140,0.1);font-weight:500;line-height:1;margin-bottom:16px}
+.svc-card h3{font-size:16px;font-weight:500;margin-bottom:10px;color:var(--navy)}
+.svc-card p{font-size:14px;color:#5A6A82;line-height:1.7}
+.svc-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue-mid);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;margin-top:16px;text-decoration:none;font-weight:500;transition:gap 0.2s}
+.svc-link:hover{gap:12px}
+
+/* ===================== STATS ===================== */
+.stats-banner{background:var(--accent);padding:40px 5%;display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:24px}
+.stat-num{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:600;color:var(--navy);line-height:1}
+.stat-label{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(11,22,40,0.5);margin-top:4px}
+.stat-div{width:1px;height:52px;background:rgba(11,22,40,0.15)}
+
+/* ===================== PORTFOLIO — RENDERS ===================== */
+.portfolio-section{background:var(--navy2);padding:96px 5%}
+.portfolio-section .s-h2{color:#fff}
+.portfolio-section .s-sub{color:rgba(255,255,255,0.32)}
+.port-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;margin-top:48px}
+.port-item{overflow:hidden;border-radius:2px;position:relative;cursor:pointer}
+.port-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.55s ease}
+.port-item:hover img{transform:scale(1.05)}
+.port-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,22,40,0.92) 0%,transparent 55%);opacity:0;transition:opacity 0.3s}
+.port-item:hover .port-ov{opacity:1}
+.port-info{position:absolute;bottom:0;left:0;right:0;padding:18px;opacity:0;transform:translateY(6px);transition:all 0.3s}
+.port-item:hover .port-info{opacity:1;transform:translateY(0)}
+.port-badge{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.port-name{font-family:var(--font-display);font-size:15px;color:#fff}
+.port-item:nth-child(1){grid-column:1/7;height:280px}
+.port-item:nth-child(2){grid-column:7/13;height:280px}
+.port-item:nth-child(3){grid-column:1/5;height:240px}
+.port-item:nth-child(4){grid-column:5/9;height:240px}
+.port-item:nth-child(5){grid-column:9/13;height:240px}
+.port-item:nth-child(6){grid-column:1/7;height:240px}
+.port-item:nth-child(7){grid-column:7/13;height:240px}
+
+/* ===================== FOOTAGE — GROUPED, NATURAL RATIO ===================== */
+.footage-section{background:#080F1C;padding:96px 5%}
+.footage-section .s-h2{color:#fff}
+.footage-section .s-sub{color:rgba(255,255,255,0.3)}
+
+.footage-category{margin-top:56px}
+.footage-cat-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.cat-tag{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:5px 14px;border-radius:2px}
+.cat-tag.completed{background:var(--accent);color:var(--navy)}
+.cat-tag.inprogress{background:var(--blue-mid);color:#fff}
+.cat-tag.previous{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5)}
+.cat-label{font-family:var(--font-display);font-size:20px;color:rgba(255,255,255,0.65)}
+.cat-count{font-size:11px;color:rgba(255,255,255,0.18);margin-left:auto;letter-spacing:0.06em}
+
+/* Natural aspect ratio grid — no cropping */
+.footage-grid-free{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:start}
+.footage-card-free{background:var(--navy2);border:1px solid rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;transition:border-color 0.3s}
+.footage-card-free:hover{border-color:var(--accent-border)}
+.footage-card-free img{width:100%;height:auto;display:block;transition:opacity 0.3s}  /* height:auto = natural ratio, zero crop */
+.footage-card-free:hover img{opacity:0.88}
+.footage-meta{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.05)}
+.footage-loc{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.footage-title{font-size:13px;font-weight:500;color:rgba(255,255,255,0.78)}
+
+/* ===================== TESTIMONIAL ===================== */
+.testimonial{background:var(--navy3);padding:72px 5%;display:grid;grid-template-columns:auto 1px 1fr;gap:60px;align-items:center;border-top:1px solid var(--accent-border);border-bottom:1px solid var(--accent-border)}
+.t-logo{font-family:var(--font-display);font-size:42px;color:var(--accent);font-weight:600}
+.t-sub{font-size:10px;color:rgba(255,255,255,0.22);letter-spacing:0.12em;text-transform:uppercase;margin-top:6px;line-height:1.6}
+.t-div{background:var(--accent-border);height:80px;align-self:center}
+blockquote{font-family:var(--font-display);font-size:clamp(18px,2.5vw,28px);color:rgba(255,255,255,0.8);font-style:italic;line-height:1.5;margin-bottom:16px}
+.t-author{font-size:12px;color:rgba(255,255,255,0.28);letter-spacing:0.08em}
+.t-stars{color:var(--accent);font-size:13px;letter-spacing:3px;margin-bottom:14px}
+
+/* ===================== CONTACT ===================== */
+.contact-section{background:var(--accent);padding:80px 5%;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.cs-h2{font-family:var(--font-display);font-size:clamp(30px,4vw,52px);color:var(--navy);font-weight:500;line-height:1.1;margin-bottom:10px}
+.cs-sub{color:rgba(11,22,40,0.52);font-size:15px}
+.c-items{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+.c-item{display:flex;gap:14px;align-items:flex-start}
+.c-icon{width:38px;height:38px;background:rgba(11,22,40,0.1);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.c-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(11,22,40,0.42);margin-bottom:2px}
+.c-val{font-size:14px;font-weight:500;color:var(--navy)}
+
+/* ===================== FLOATING CTA ===================== */
+.float-cta{position:fixed;bottom:28px;right:28px;z-index:400;background:var(--accent);color:var(--navy);font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:12px 22px;border-radius:24px;text-decoration:none;box-shadow:0 6px 32px rgba(245,197,24,0.35);display:flex;align-items:center;gap:8px;transition:all 0.25s;animation:floatIn 1s 2s ease both;opacity:0}
+.float-cta:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 10px 40px rgba(245,197,24,0.5)}
+.fc-dot{width:7px;height:7px;border-radius:50%;background:rgba(11,22,40,0.5);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes floatIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===================== FOOTER ===================== */
+footer{background:var(--navy);border-top:1px solid var(--accent-border);padding:36px 5%;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-family:var(--font-display);font-size:22px;color:var(--accent);font-weight:600}
+.footer-links{display:flex;gap:24px;list-style:none}
+.footer-links a{color:rgba(255,255,255,0.2);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--accent)}
+.footer-copy{color:rgba(255,255,255,0.15);font-size:11px}
+
+/* ===================== SCROLL REVEAL ===================== */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}.rd4{transition-delay:.4s}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:900px){
+  .services-grid,.contact-section{grid-template-columns:1fr}
+  .port-item:nth-child(n){grid-column:1/13;height:200px}
+  .footage-grid-free{grid-template-columns:1fr}
+  .testimonial{grid-template-columns:1fr;gap:28px}
+  .t-div{display:none}
+  footer{flex-direction:column;gap:20px;text-align:center}
+  .nav-links{display:none}
+  .stats-banner{flex-direction:column}
+  .stat-div{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#">WFCC</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#references">Site Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get a Quote</button>
+</nav>
+
+<a href="#contact" class="float-cta"><span class="fc-dot"></span>Free Estimate</a>
+
+<!-- ============================================================ -->
+<!-- CINEMATIC BLOCK 1 — Houses 1 & 2                            -->
+<!-- ============================================================ -->
+<div class="cine-block" id="cine1">
+  <div class="cine-sticky">
+    <div class="cine-bg active" id="c1bg0" style="background-image:url('images/house1.png')"></div>
+    <div class="cine-bg"        id="c1bg1" style="background-image:url('images/house2.png')"></div>
+    <div class="vig-left" id="c1vig"></div>
+    <div class="vig-bottom"></div>
+
+    <div class="cine-text left shown" id="c1t0">
+      <p class="cine-eyebrow">Architects · Engineers · Builders</p>
+      <h1 class="cine-h">Your dream home,<br><em>engineered to last.</em></h1>
+      <p class="cine-sub">From first sketch to final handover — WFCC turns your vision into a structure built for generations.</p>
+      <div class="cine-btns">
+        <a href="#contact" class="btn-accent">Start a project</a>
+        <a href="#portfolio" class="btn-ghost-w">View our work →</a>
+      </div>
+    </div>
+    <div class="cine-text right" id="c1t1">
+      <p class="cine-eyebrow">Tropical · Modern · Design</p>
+      <h1 class="cine-h">Where nature meets<br><em>precision design.</em></h1>
+      <p class="cine-sub">Seamless integration of landscape and structure — homes that breathe with the Philippine climate.</p>
+    </div>
+
+    <div class="slide-badge left-b shown" id="c1b0"><div class="badge-type">3D Render · Residential</div><div class="badge-name">Modern Two-Storey Residence</div></div>
+    <div class="slide-badge right-b"      id="c1b1"><div class="badge-type">3D Render · Tropical Modern</div><div class="badge-name">Tropical Home — Side Elevation</div></div>
+
+    <div class="dot-nav">
+      <div class="dot active" data-cine="1" data-index="0"></div>
+      <div class="dot"        data-cine="1" data-index="1"></div>
+    </div>
+    <div class="scroll-hint"><div class="sh-text">Scroll</div><div class="sh-line"></div></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICES                                                      -->
+<!-- ============================================================ -->
+<section class="content-section services-section" id="services">
+  <div class="reveal"><p class="s-label">What we do</p></div>
+  <div class="reveal rd1"><h2 class="s-h2">End-to-end<br>construction services</h2></div>
+  <div class="reveal rd2"><p class="s-sub">One team. One contract. Full accountability — from concept to keys-in-hand.</p></div>
+  <div class="services-grid">
+    <div class="svc-card reveal rd1"><div class="svc-num">01</div><h3>Architecture & Design</h3><p>Photorealistic 3D visualization, floor planning, and complete design documentation tailored to your vision and budget.</p><a href="#portfolio" class="svc-link">See renders →</a></div>
+    <div class="svc-card reveal rd2"><div class="svc-num">02</div><h3>Design & Build</h3><p>Turnkey construction from concept to turnover — houses, apartments, and commercial spaces across the Philippines.</p><a href="#portfolio" class="svc-link">See projects →</a></div>
+    <div class="svc-card reveal rd3"><div class="svc-num">03</div><h3>Permit Processing</h3><p>Full building permit acquisition, LGU compliance management, and all documentation handled by our in-house team.</p><a href="#contact" class="svc-link">Inquire now →</a></div>
+    <div class="svc-card reveal rd4"><div class="svc-num">04</div><h3>Renovation & Fit-out</h3><p>Store construction, office fit-out, tile installation, and interior works for commercial and institutional clients.</p><a href="#contact" class="svc-link">Get a quote →</a></div>
+  </div>
+</section>
+
+<div class="stats-banner reveal">
+  <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">Years of experience</div></div>
+  <div class="stat-div"></div>
+  <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Projects completed</div></div>
+  <div class="stat-div"></div>
+  <div class="stat-item"><div class="stat-num">3-in-1</div><div class="stat-label">Design · Permit · Build</div></div>
+  <div class="stat-div"></div>
+  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Completion rate</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CINEMATIC BLOCK 2 — Houses 3 & 4                            -->
+<!-- ============================================================ -->
+<div class="cine-block" id="cine2">
+  <div class="cine-sticky">
+    <div class="cine-bg active" id="c2bg0" style="background-image:url('images/house3.png')"></div>
+    <div class="cine-bg"        id="c2bg1" style="background-image:url('images/house4.png')"></div>
+    <div class="vig-right" id="c2vig"></div>
+    <div class="vig-bottom"></div>
+
+    <div class="cine-text right shown" id="c2t0">
+      <p class="cine-eyebrow">Crafted for Filipino living</p>
+      <h1 class="cine-h">Built for comfort.<br><em>Designed to impress.</em></h1>
+      <p class="cine-sub">Wide eaves, open balconies, panoramic windows — architecture that understands the tropics.</p>
+    </div>
+    <div class="cine-text left" id="c2t1">
+      <p class="cine-eyebrow">Architectural Design</p>
+      <h1 class="cine-h">Beyond conventional.<br><em>Beyond ordinary.</em></h1>
+      <p class="cine-sub">Daring forms, dramatic geometry — WFCC pushes boundaries for clients who think differently.</p>
+    </div>
+
+    <div class="slide-badge right-b shown" id="c2b0"><div class="badge-type">3D Render · Residential</div><div class="badge-name">Tropical Modern — Front Elevation</div></div>
+    <div class="slide-badge left-b"        id="c2b1"><div class="badge-type">3D Render · Architectural</div><div class="badge-name">A-Frame Forest Retreat — Angle</div></div>
+
+    <div class="dot-nav">
+      <div class="dot active" data-cine="2" data-index="0"></div>
+      <div class="dot"        data-cine="2" data-index="1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PORTFOLIO — ALL RENDERS                                       -->
+<!-- ============================================================ -->
+<section class="portfolio-section" id="portfolio">
+  <div class="reveal"><p class="s-label">Design visualizations</p></div>
+  <div class="reveal rd1"><h2 class="s-h2">Every project starts<br>with a render</h2></div>
+  <div class="reveal rd2"><p class="s-sub">So you see it exactly — before a single brick is laid.</p></div>
+  <div class="port-grid">
+    <div class="port-item reveal rd1"><img src="images/house1.png" alt="Modern Two-Storey"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Residential · Exterior</div><div class="port-name">Modern Two-Storey Residence</div></div></div>
+    <div class="port-item reveal rd2"><img src="images/aerial.png" alt="Aerial view"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Residential · Aerial</div><div class="port-name">Modern Home — Bird's Eye View</div></div></div>
+    <div class="port-item reveal rd1"><img src="images/house3.png" alt="Tropical front"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Residential · Exterior</div><div class="port-name">Tropical Modern — Front Elevation</div></div></div>
+    <div class="port-item reveal rd2"><img src="images/house5.png" alt="A-Frame"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Architectural · Exterior</div><div class="port-name">A-Frame Forest Retreat</div></div></div>
+    <div class="port-item reveal rd3"><img src="images/luxury.png" alt="Luxury interior"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Interior · Render</div><div class="port-name">Luxury Living Area Concept</div></div></div>
+    <div class="port-item reveal rd1"><img src="images/interior1.png" alt="Bedroom render"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Interior · Render</div><div class="port-name">Master Bedroom with View</div></div></div>
+    <div class="port-item reveal rd2"><img src="images/bedroom.png" alt="Bedroom interior"><div class="port-ov"></div><div class="port-info"><div class="port-badge">Interior · Render</div><div class="port-name">Bedroom — Natural Light Study</div></div></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CINEMATIC BLOCK 3 — House 5, bridge to site work             -->
+<!-- ============================================================ -->
+<div class="cine-block" id="cine3">
+  <div class="cine-sticky">
+    <div class="cine-bg active" id="c3bg0" style="background-image:url('images/house5.png')"></div>
+    <div class="vig-left"></div>
+    <div class="vig-bottom"></div>
+    <div class="cine-text left shown" id="c3t0">
+      <p class="cine-eyebrow">Start your project today</p>
+      <h1 class="cine-h">Your project.<br><em>Our obsession.</em></h1>
+      <p class="cine-sub">Every great building starts with a single conversation. Below, see our team in action — real sites, real work.</p>
+      <div class="cine-btns">
+        <a href="#contact" class="btn-accent">Start a project</a>
+        <a href="#references" class="btn-ghost-w">See site work →</a>
+      </div>
+    </div>
+    <div class="slide-badge left-b shown"><div class="badge-type">3D Render · Architectural</div><div class="badge-name">A-Frame Forest Retreat — Facade</div></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ACTUAL FOOTAGE — 3 CATEGORIES, NATURAL ASPECT RATIO          -->
+<!-- ============================================================ -->
+<section class="footage-section" id="references">
+  <div class="reveal"><p class="s-label">Actual site work</p></div>
+  <div class="reveal rd1"><h2 class="s-h2" style="color:#fff">On-site documentation</h2></div>
+  <div class="reveal rd2"><p class="s-sub">Unedited footage from our ongoing and completed projects. What you see is exactly how we work.</p></div>
+
+  <!-- COMPLETED -->
+  <div class="footage-category reveal">
+    <div class="footage-cat-header">
+      <span class="cat-tag completed">✓ Completed</span>
+      <span class="cat-label">Finished Projects</span>
+      <span class="cat-count">2 photos</span>
+    </div>
+    <div class="footage-grid-free">
+      <div class="footage-card-free">
+        <img src="images/finished1.png" alt="Site inspection Malibay Pasay">
+        <div class="footage-meta">
+          <div class="footage-loc">Malibay, Pasay City</div>
+          <div class="footage-title">Electrical & Facade — Site Inspection</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/finished2.png" alt="Interior ceiling Malibay Pasay">
+        <div class="footage-meta">
+          <div class="footage-loc">Malibay, Pasay City</div>
+          <div class="footage-title">Interior Ceiling with Cove Lighting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN PROGRESS -->
+  <div class="footage-category reveal rd1">
+    <div class="footage-cat-header">
+      <span class="cat-tag inprogress">⚙ In Progress</span>
+      <span class="cat-label">Under Construction</span>
+      <span class="cat-count">4 photos</span>
+    </div>
+    <div class="footage-grid-free">
+      <div class="footage-card-free">
+        <img src="images/wip1.png" alt="Store construction San Pedro Laguna">
+        <div class="footage-meta">
+          <div class="footage-loc">San Pedro, Laguna</div>
+          <div class="footage-title">Store Construction — Interior Fit-out</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/wip2.png" alt="Store construction San Pedro Laguna front">
+        <div class="footage-meta">
+          <div class="footage-loc">San Pedro, Laguna</div>
+          <div class="footage-title">Store Construction — Facade & Entrance</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/wip3.png" alt="Store construction Sta Cruz Laguna">
+        <div class="footage-meta">
+          <div class="footage-loc">Sta. Cruz, Laguna</div>
+          <div class="footage-title">Store Construction — Glass Partition Works</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/wip4.png" alt="Store construction Sta Cruz Laguna wall">
+        <div class="footage-meta">
+          <div class="footage-loc">Sta. Cruz, Laguna</div>
+          <div class="footage-title">Store Construction — Feature Wall & Shelving</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIOUS SITES -->
+  <div class="footage-category reveal rd2">
+    <div class="footage-cat-header">
+      <span class="cat-tag previous">📍 Previous Sites</span>
+      <span class="cat-label">Earlier Projects</span>
+      <span class="cat-count">3 photos</span>
+    </div>
+    <div class="footage-grid-free">
+      <div class="footage-card-free">
+        <img src="images/office.png" alt="Office construction site inspection">
+        <div class="footage-meta">
+          <div class="footage-loc">Office Construction</div>
+          <div class="footage-title">Site Inspection — Scaffolding & Structural Works</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/tiles.png" alt="Tiles installation Pembo Elementary">
+        <div class="footage-meta">
+          <div class="footage-loc">Pembo, Makati</div>
+          <div class="footage-title">Pembo Elementary — Corridor Tile Installation</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/building.png" alt="Completed building night shot">
+        <div class="footage-meta">
+          <div class="footage-loc">Residential</div>
+          <div class="footage-title">Completed Two-Storey Building — Post Turnover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SITE VISIT -->
+  <div class="footage-category reveal rd2">
+    <div class="footage-cat-header">
+      <span class="cat-tag previous">📍 Site Visit </span>
+      <span class="cat-label">Occular Inspection</span>
+      <span class="cat-count">3 photos</span>
+    </div>
+    <div class="footage-grid-free">
+      <div class="footage-card-free">
+        <img src="images/sv1.png" alt="Site inspection">
+        <div class="footage-meta">
+          <div class="footage-loc">Site inspection</div>
+          <div class="footage-title">Site Inspection — Blue Mountains Antipolo Rizal</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/sv2.png" alt="Site Inspection">
+        <div class="footage-meta">
+          <div class="footage-loc">Site inspection</div>
+          <div class="footage-title">Site Inspection — Blue Mountains Antipolo Rizal</div>
+        </div>
+      </div>
+      <div class="footage-card-free">
+        <img src="images/sv3.png" alt="Site Inspection">
+        <div class="footage-meta">
+          <div class="footage-loc">Site inspection</div>
+          <div class="footage-title">Site Inspection — Blue Mountains Antipolo Rizal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<div class="testimonial reveal">
+  <div><div class="t-logo">WFCC</div><div class="t-sub">W.F Construction<br>Corporation</div></div>
+  <div class="t-div"></div>
+  <div>
+    <div class="t-stars">★★★★★</div>
+    <blockquote>"WFCC delivered our apartment building on time and exactly as rendered. From the first 3D model to the final turnover — professional, transparent, meticulous."</blockquote>
+    <div class="t-author">— Property investor, Metro Manila</div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="reveal">
+    <h2 class="cs-h2">Ready to build<br>your vision?</h2>
+    <p class="cs-sub">Tell us about your project. We'll respond within 24 hours with an initial assessment.</p>
+  </div>
+  <div class="reveal rd2">
+    <div class="c-items">
+      <div class="c-item"><div class="c-icon">📞</div><div><div class="c-lbl">Call or Viber</div><div class="c-val">(+63) 953-407-9957</div></div></div>
+      <div class="c-item"><div class="c-icon">✉️</div><div><div class="c-lbl">Email us</div><div class="c-val">estimating.wfcc@gmail.com</div></div></div>
+      <div class="c-item"><div class="c-icon">📘</div><div><div class="c-lbl">Facebook</div><div class="c-val">W.F Construction Corporation</div></div></div>
+    </div>
+    <a href="mailto:estimating.wfcc@gmail.com" class="btn-navy">Send us a message →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">WFCC</div>
+  <ul class="footer-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#references">Site Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 W.F Construction Corporation</div>
+</footer>
+
+<script>
+// NAV
+var nav = document.getElementById('main-nav');
+window.addEventListener('scroll', function(){ nav.classList.toggle('scrolled', window.scrollY > 40); }, {passive:true});
+
+// CINEMATIC ENGINE
+var blocks = [
+  { el:document.getElementById('cine1'), slides:2, bgs:[document.getElementById('c1bg0'),document.getElementById('c1bg1')], texts:[document.getElementById('c1t0'),document.getElementById('c1t1')], badges:[document.getElementById('c1b0'),document.getElementById('c1b1')], dots:document.querySelectorAll('[data-cine="1"]'), vigEl:document.getElementById('c1vig'), startLeft:true, cur:0 },
+  { el:document.getElementById('cine2'), slides:2, bgs:[document.getElementById('c2bg0'),document.getElementById('c2bg1')], texts:[document.getElementById('c2t0'),document.getElementById('c2t1')], badges:[document.getElementById('c2b0'),document.getElementById('c2b1')], dots:document.querySelectorAll('[data-cine="2"]'), vigEl:document.getElementById('c2vig'), startLeft:false, cur:0 },
+  { el:document.getElementById('cine3'), slides:1, bgs:[document.getElementById('c3bg0')], texts:[document.getElementById('c3t0')], badges:[], dots:[], cur:0 }
+];
+
+function goSlide(b, i) {
+  if (i === b.cur) return;
+  var p = b.cur; b.cur = i;
+  b.bgs[p].style.transition = 'opacity 1s ease'; b.bgs[p].style.opacity = '0';
+  b.bgs[i].style.transition = 'opacity 1s ease'; b.bgs[i].style.opacity = '1';
+  b.texts[p].classList.remove('shown');
+  setTimeout(function(){ b.texts[i].classList.add('shown'); }, 280);
+  if (b.badges[p]) b.badges[p].classList.remove('shown');
+  if (b.badges[i]) setTimeout(function(){ b.badges[i].classList.add('shown'); }, 480);
+  b.dots.forEach(function(d, idx){ d.classList.toggle('active', idx === i); });
+  if (b.vigEl) {
+    var goLeft = (b.startLeft && i === 0) || (!b.startLeft && i === 1);
+    b.vigEl.className = goLeft ? 'vig-left' : 'vig-right';
+  }
+}
+
+function onScroll() {
+  blocks.forEach(function(b){
+    var rect = b.el.getBoundingClientRect();
+    var totalH = b.el.offsetHeight - window.innerHeight;
+    var prog = Math.max(0, Math.min(1, -rect.top / totalH));
+    goSlide(b, Math.min(b.slides - 1, Math.floor(prog * b.slides)));
+  });
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+
+document.querySelectorAll('.dot[data-cine]').forEach(function(dot){
+  dot.addEventListener('click', function(){
+    var b = blocks[parseInt(dot.getAttribute('data-cine')) - 1];
+    var i = parseInt(dot.getAttribute('data-index'));
+    var totalH = b.el.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: b.el.offsetTop + (i / b.slides) * totalH + 10, behavior:'smooth' });
+  });
+});
+
+// Scroll reveal
+var ro = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el); });
+</script>
+</body>
+</html>
